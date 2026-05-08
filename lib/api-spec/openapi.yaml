@@ -3,20 +3,31 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Photography Booking Admin API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: auth
+    description: Authentication operations
+  - name: bookings
+    description: Booking/confirm request operations
+  - name: inquiries
+    description: Inquiry request operations
+  - name: photographers
+    description: Photographer management
+  - name: packages
+    description: Price and package management
+  - name: dashboard
+    description: Dashboard summary data
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +35,493 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginBody"
+      responses:
+        "200":
+          description: Login success
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: Unauthorized
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      summary: Get current admin profile
+      responses:
+        "200":
+          description: Admin profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Admin"
+    put:
+      operationId: updateMe
+      tags: [auth]
+      summary: Update admin profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAdminBody"
+      responses:
+        "200":
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Admin"
+
+  /dashboard/summary:
+    get:
+      operationId: getDashboardSummary
+      tags: [dashboard]
+      summary: Dashboard summary statistics
+      responses:
+        "200":
+          description: Summary stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardSummary"
+
+  /bookings:
+    get:
+      operationId: getBookings
+      tags: [bookings]
+      summary: List all booking requests
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: eventType
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: dateFrom
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: dateTo
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: search
+          in: query
+          schema:
+            type: ["string", "null"]
+      responses:
+        "200":
+          description: List of bookings
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Booking"
+    post:
+      operationId: createBooking
+      tags: [bookings]
+      summary: Create a new booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookingBody"
+      responses:
+        "201":
+          description: Created booking
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+
+  /bookings/{id}:
+    get:
+      operationId: getBooking
+      tags: [bookings]
+      summary: Get booking details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Booking details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookingDetail"
+    put:
+      operationId: updateBooking
+      tags: [bookings]
+      summary: Update booking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBookingBody"
+      responses:
+        "200":
+          description: Updated booking
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+
+  /bookings/{id}/assign:
+    post:
+      operationId: assignPhotographer
+      tags: [bookings]
+      summary: Assign a photographer to a booking day
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssignPhotographerBody"
+      responses:
+        "200":
+          description: Assignment confirmed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Booking"
+
+  /inquiries:
+    get:
+      operationId: getInquiries
+      tags: [inquiries]
+      summary: List all inquiry requests
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: ["string", "null"]
+      responses:
+        "200":
+          description: List of inquiries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Inquiry"
+    post:
+      operationId: createInquiry
+      tags: [inquiries]
+      summary: Create a new inquiry
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateInquiryBody"
+      responses:
+        "201":
+          description: Created inquiry
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Inquiry"
+
+  /inquiries/{id}:
+    get:
+      operationId: getInquiry
+      tags: [inquiries]
+      summary: Get inquiry details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Inquiry details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Inquiry"
+
+  /photographers:
+    get:
+      operationId: getPhotographers
+      tags: [photographers]
+      summary: List all photographers
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: date
+          in: query
+          schema:
+            type: ["string", "null"]
+        - name: search
+          in: query
+          schema:
+            type: ["string", "null"]
+      responses:
+        "200":
+          description: List of photographers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Photographer"
+    post:
+      operationId: createPhotographer
+      tags: [photographers]
+      summary: Create a new photographer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePhotographerBody"
+      responses:
+        "201":
+          description: Created photographer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Photographer"
+
+  /photographers/{id}:
+    get:
+      operationId: getPhotographer
+      tags: [photographers]
+      summary: Get photographer details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Photographer details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PhotographerDetail"
+    put:
+      operationId: updatePhotographer
+      tags: [photographers]
+      summary: Update photographer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePhotographerBody"
+      responses:
+        "200":
+          description: Updated photographer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Photographer"
+
+  /photographers/available:
+    get:
+      operationId: getAvailablePhotographers
+      tags: [photographers]
+      summary: Get photographers available for a specific date
+      parameters:
+        - name: date
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Availability grouped list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PhotographerAvailability"
+
+  /packages:
+    get:
+      operationId: getPackages
+      tags: [packages]
+      summary: List all packages
+      responses:
+        "200":
+          description: List of packages
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Package"
+    post:
+      operationId: createPackage
+      tags: [packages]
+      summary: Create a package
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePackageBody"
+      responses:
+        "201":
+          description: Created package
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Package"
+
+  /packages/{id}:
+    put:
+      operationId: updatePackage
+      tags: [packages]
+      summary: Update a package price
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePackageBody"
+      responses:
+        "200":
+          description: Updated package
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Package"
+    delete:
+      operationId: deletePackage
+      tags: [packages]
+      summary: Delete a package
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
+  /addons:
+    get:
+      operationId: getAddons
+      tags: [packages]
+      summary: List all add-ons
+      responses:
+        "200":
+          description: List of add-ons
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Addon"
+    post:
+      operationId: createAddon
+      tags: [packages]
+      summary: Create an add-on
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAddonBody"
+      responses:
+        "201":
+          description: Created add-on
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Addon"
+
+  /addons/{id}:
+    put:
+      operationId: updateAddon
+      tags: [packages]
+      summary: Update an add-on
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAddonBody"
+      responses:
+        "200":
+          description: Updated add-on
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Addon"
+    delete:
+      operationId: deleteAddon
+      tags: [packages]
+      summary: Delete an add-on
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Deleted
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +532,649 @@ components:
       required:
         - status
 
+    LoginBody:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        admin:
+          $ref: "#/components/schemas/Admin"
+      required:
+        - token
+        - admin
+
+    Admin:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        role:
+          type: string
+        avatarUrl:
+          type: ["string", "null"]
+      required:
+        - id
+        - name
+        - email
+        - role
+
+    UpdateAdminBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: ["string", "null"]
+        avatarUrl:
+          type: ["string", "null"]
+
+    DashboardSummary:
+      type: object
+      properties:
+        totalRequests:
+          type: integer
+        confirmedBookings:
+          type: integer
+        inquiryRequests:
+          type: integer
+        availablePhotographers:
+          type: integer
+        recentBookings:
+          type: array
+          items:
+            $ref: "#/components/schemas/Booking"
+        bookingsByStatus:
+          type: array
+          items:
+            $ref: "#/components/schemas/StatusCount"
+        bookingsByEventType:
+          type: array
+          items:
+            $ref: "#/components/schemas/EventTypeCount"
+      required:
+        - totalRequests
+        - confirmedBookings
+        - inquiryRequests
+        - availablePhotographers
+        - recentBookings
+        - bookingsByStatus
+        - bookingsByEventType
+
+    StatusCount:
+      type: object
+      properties:
+        status:
+          type: string
+        count:
+          type: integer
+      required:
+        - status
+        - count
+
+    EventTypeCount:
+      type: object
+      properties:
+        eventType:
+          type: string
+        count:
+          type: integer
+      required:
+        - eventType
+        - count
+
+    Booking:
+      type: object
+      properties:
+        id:
+          type: integer
+        clientName:
+          type: string
+        clientPhone:
+          type: string
+        clientEmail:
+          type: string
+        eventType:
+          type: string
+        eventDate:
+          type: string
+        endDate:
+          type: ["string", "null"]
+        location:
+          type: string
+        status:
+          type: string
+          enum: [new, pending, assigned, confirmed]
+        assignedPhotographerId:
+          type: ["integer", "null"]
+        assignedPhotographerName:
+          type: ["string", "null"]
+        packageId:
+          type: ["integer", "null"]
+        packageName:
+          type: ["string", "null"]
+        totalPrice:
+          type: ["number", "null"]
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - clientName
+        - clientPhone
+        - clientEmail
+        - eventType
+        - eventDate
+        - location
+        - status
+        - createdAt
+
+    BookingDay:
+      type: object
+      properties:
+        dayNumber:
+          type: integer
+        date:
+          type: string
+        details:
+          type: string
+        photographerId:
+          type: ["integer", "null"]
+        photographerName:
+          type: ["string", "null"]
+      required:
+        - dayNumber
+        - date
+        - details
+
+    BookingDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+        clientName:
+          type: string
+        clientPhone:
+          type: string
+        clientEmail:
+          type: string
+        eventType:
+          type: string
+        eventDate:
+          type: string
+        endDate:
+          type: ["string", "null"]
+        location:
+          type: string
+        status:
+          type: string
+          enum: [new, pending, assigned, confirmed]
+        assignedPhotographerId:
+          type: ["integer", "null"]
+        assignedPhotographerName:
+          type: ["string", "null"]
+        packageId:
+          type: ["integer", "null"]
+        packageName:
+          type: ["string", "null"]
+        addons:
+          type: array
+          items:
+            type: string
+        totalPrice:
+          type: ["number", "null"]
+        notes:
+          type: ["string", "null"]
+        days:
+          type: array
+          items:
+            $ref: "#/components/schemas/BookingDay"
+        createdAt:
+          type: string
+      required:
+        - id
+        - clientName
+        - clientPhone
+        - clientEmail
+        - eventType
+        - eventDate
+        - location
+        - status
+        - days
+        - addons
+        - createdAt
+
+    CreateBookingBody:
+      type: object
+      properties:
+        clientName:
+          type: string
+        clientPhone:
+          type: string
+        clientEmail:
+          type: string
+        eventType:
+          type: string
+        eventDate:
+          type: string
+        endDate:
+          type: ["string", "null"]
+        location:
+          type: string
+        packageId:
+          type: ["integer", "null"]
+        notes:
+          type: ["string", "null"]
+      required:
+        - clientName
+        - clientPhone
+        - clientEmail
+        - eventType
+        - eventDate
+        - location
+
+    UpdateBookingBody:
+      type: object
+      properties:
+        status:
+          type: ["string", "null"]
+        assignedPhotographerId:
+          type: ["integer", "null"]
+        notes:
+          type: ["string", "null"]
+
+    AssignPhotographerBody:
+      type: object
+      properties:
+        dayNumber:
+          type: integer
+        photographerId:
+          type: integer
+      required:
+        - dayNumber
+        - photographerId
+
+    Inquiry:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        phone:
+          type: string
+        email:
+          type: ["string", "null"]
+        message:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - phone
+        - message
+        - createdAt
+
+    CreateInquiryBody:
+      type: object
+      properties:
+        name:
+          type: string
+        phone:
+          type: string
+        email:
+          type: ["string", "null"]
+        message:
+          type: string
+      required:
+        - name
+        - phone
+        - message
+
+    Photographer:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        specialization:
+          type: string
+        experience:
+          type: integer
+        status:
+          type: string
+          enum: [available, busy, unavailable]
+        avatarUrl:
+          type: ["string", "null"]
+        workingDays:
+          type: array
+          items:
+            type: string
+        city:
+          type: string
+        currentBookingCount:
+          type: integer
+      required:
+        - id
+        - name
+        - email
+        - phone
+        - specialization
+        - experience
+        - status
+        - workingDays
+        - city
+        - currentBookingCount
+
+    PhotographerDetail:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        specialization:
+          type: string
+        experience:
+          type: integer
+        status:
+          type: string
+          enum: [available, busy, unavailable]
+        avatarUrl:
+          type: ["string", "null"]
+        workingDays:
+          type: array
+          items:
+            type: string
+        city:
+          type: string
+        currentBookingCount:
+          type: integer
+        skills:
+          type: array
+          items:
+            type: string
+        bio:
+          type: ["string", "null"]
+        completedShoots:
+          type: array
+          items:
+            $ref: "#/components/schemas/CompletedShoot"
+        upcomingBookings:
+          type: array
+          items:
+            $ref: "#/components/schemas/UpcomingBooking"
+      required:
+        - id
+        - name
+        - email
+        - phone
+        - specialization
+        - experience
+        - status
+        - workingDays
+        - city
+        - currentBookingCount
+        - skills
+        - completedShoots
+        - upcomingBookings
+
+    CompletedShoot:
+      type: object
+      properties:
+        id:
+          type: integer
+        eventType:
+          type: string
+        date:
+          type: string
+        clientName:
+          type: string
+        location:
+          type: string
+      required:
+        - id
+        - eventType
+        - date
+        - clientName
+        - location
+
+    UpcomingBooking:
+      type: object
+      properties:
+        id:
+          type: integer
+        eventType:
+          type: string
+        date:
+          type: string
+        clientName:
+          type: string
+        location:
+          type: string
+        status:
+          type: string
+      required:
+        - id
+        - eventType
+        - date
+        - clientName
+        - location
+        - status
+
+    PhotographerAvailability:
+      type: object
+      properties:
+        available:
+          type: array
+          items:
+            $ref: "#/components/schemas/Photographer"
+        unavailable:
+          type: array
+          items:
+            $ref: "#/components/schemas/UnavailablePhotographer"
+      required:
+        - available
+        - unavailable
+
+    UnavailablePhotographer:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        specialization:
+          type: string
+        avatarUrl:
+          type: ["string", "null"]
+        reason:
+          type: string
+      required:
+        - id
+        - name
+        - specialization
+        - reason
+
+    CreatePhotographerBody:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        specialization:
+          type: string
+        experience:
+          type: integer
+        workingDays:
+          type: array
+          items:
+            type: string
+        city:
+          type: string
+        bio:
+          type: ["string", "null"]
+        skills:
+          type: array
+          items:
+            type: string
+      required:
+        - name
+        - email
+        - phone
+        - specialization
+        - experience
+        - workingDays
+        - city
+
+    UpdatePhotographerBody:
+      type: object
+      properties:
+        name:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        phone:
+          type: ["string", "null"]
+        specialization:
+          type: ["string", "null"]
+        experience:
+          type: ["integer", "null"]
+        status:
+          type: ["string", "null"]
+        workingDays:
+          type: ["array", "null"]
+          items:
+            type: string
+        city:
+          type: ["string", "null"]
+        bio:
+          type: ["string", "null"]
+        skills:
+          type: ["array", "null"]
+          items:
+            type: string
+
+    Package:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+        description:
+          type: ["string", "null"]
+        price:
+          type: number
+        duration:
+          type: ["string", "null"]
+      required:
+        - id
+        - name
+        - category
+        - price
+
+    CreatePackageBody:
+      type: object
+      properties:
+        name:
+          type: string
+        category:
+          type: string
+        description:
+          type: ["string", "null"]
+        price:
+          type: number
+        duration:
+          type: ["string", "null"]
+      required:
+        - name
+        - category
+        - price
+
+    UpdatePackageBody:
+      type: object
+      properties:
+        name:
+          type: ["string", "null"]
+        category:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+        price:
+          type: ["number", "null"]
+        duration:
+          type: ["string", "null"]
+
+    Addon:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+        description:
+          type: ["string", "null"]
+      required:
+        - id
+        - name
+        - price
+
+    CreateAddonBody:
+      type: object
+      properties:
+        name:
+          type: string
+        price:
+          type: number
+        description:
+          type: ["string", "null"]
+      required:
+        - name
+        - price
+
+    UpdateAddonBody:
+      type: object
+      properties:
+        name:
+          type: ["string", "null"]
+        price:
+          type: ["number", "null"]
+        description:
+          type: ["string", "null"]
