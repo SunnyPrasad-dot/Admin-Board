@@ -1,0 +1,401 @@
+Design a clean, modern, practical, and user-friendly admin dashboard UI for a photography booking and photographer management system.
+
+IMPORTANT:
+This is NOT a luxury marketing website.
+This is an operational admin dashboard focused on clarity, workflow, usability, and management.
+
+The UI should feel:
+- modern
+- organized
+- professional
+- practical
+- easy to manage daily operations
+
+Do NOT overdesign.
+Avoid unnecessary animations or fancy visuals.
+Focus on workflow, usability, readability, and management efficiency.
+
+--------------------------------------------------
+
+DESIGN STYLE:
+- Clean modern dashboard
+- Minimal and organized layout
+- Soft shadows
+- Rounded corners (10px–14px)
+- Clear spacing and alignment
+- Practical admin experience
+
+--------------------------------------------------
+
+COLOR SYSTEM:
+- Main background: #F5F6FA
+- Sidebar: #FFFFFF
+- Cards: #FFFFFF
+- Borders: #E5E7EB
+- Primary accent: #4F46E5
+- Secondary accent: #6366F1
+- Success: #22C55E
+- Warning: #F59E0B
+- Danger: #EF4444
+- Text primary: #111827
+- Text secondary: #6B7280
+
+Use subtle colors and maintain professional dashboard feel.
+
+--------------------------------------------------
+
+TYPOGRAPHY:
+- Clean sans-serif typography
+- Strong hierarchy
+- Large page titles
+- Minimal text
+- High readability
+
+--------------------------------------------------
+
+LAYOUT STRUCTURE:
+
+LEFT SIDEBAR:
+Include:
+- Dashboard
+- Confirm Requests
+- Inquiry Requests
+- Photographers
+- Price Management
+- Settings
+- Logout
+
+Sidebar requirements:
+- Active menu highlight
+- Icons for each menu item
+- Collapsible on tablet/mobile
+- Clean spacing
+
+TOP NAVBAR:
+Include:
+- Search bar
+- Notification bell
+- Admin profile avatar
+- Profile dropdown menu
+
+Profile dropdown:
+- View profile
+- Account settings
+- Logout
+
+--------------------------------------------------
+
+LOGIN PAGE:
+
+Create a clean login screen with:
+- Admin logo/title
+- Email/username input
+- Password input
+- Forgot password
+- Login button
+
+Also create:
+- Reset password screen
+- Update password form
+
+Design should be minimal and professional.
+
+--------------------------------------------------
+
+ADMIN PROFILE PAGE:
+
+Create a profile/account page for admin.
+
+Include:
+- Profile image
+- Name
+- Email
+- Phone
+- Role
+- Change password option
+- Edit profile button
+- Logout button
+
+--------------------------------------------------
+
+DASHBOARD HOME PAGE:
+
+This is the main operations center.
+
+TOP SUMMARY CARDS:
+- Total Requests
+- Confirmed Bookings
+- Inquiry Requests
+- Available Photographers
+
+Below that:
+Create 2 main tabs:
+
+1. Confirm Requests
+2. Inquiry Requests
+
+--------------------------------------------------
+
+CONFIRM REQUESTS SECTION:
+
+Display booking requests in a clean table layout.
+
+Columns:
+- Client Name
+- Event Type
+- Event Date
+- Location
+- Status
+- Assigned Photographer
+- Action
+
+Status badges:
+- New
+- Pending
+- Assigned
+- Confirmed
+
+Actions:
+- View Details
+- Assign Photographer
+
+Include:
+- Search bar
+- Filters:
+  - By date
+  - By event type
+  - By status
+
+IMPORTANT:
+Confirm requests are users who completed booking flow and submitted booking confirmation.
+
+--------------------------------------------------
+
+INQUIRY REQUESTS SECTION:
+
+This is for users who only submitted inquiry/contact details.
+
+Display:
+- Name
+- Phone
+- Inquiry message
+- Date
+- Action button
+
+Actions:
+- View inquiry
+- Contact user
+
+Inquiry requests should visually feel lower priority than confirmed requests.
+
+--------------------------------------------------
+
+REQUEST DETAILS PAGE:
+
+When admin clicks a request:
+Open detailed booking page.
+
+Include:
+
+CLIENT DETAILS:
+- Name
+- Phone
+- Email
+
+EVENT DETAILS:
+- Event type
+- Date
+- Time
+- Location
+- Notes
+
+SELECTED PACKAGE:
+- Selected category
+- Add-ons
+- Price summary
+
+--------------------------------------------------
+
+PHOTOGRAPHER ASSIGNMENT SECTION:
+
+IMPORTANT WORKFLOW:
+
+The system should NOT auto assign photographers.
+
+Instead:
+- System suggests available photographers based on selected date/time.
+- Admin manually selects photographer.
+
+Create 2 sections:
+
+1. Suggested Available Photographers
+2. Unavailable / Booked Photographers
+
+AVAILABLE PHOTOGRAPHER CARD:
+- Profile image
+- Name
+- Specialization
+- Experience
+- Availability badge
+- Current workload
+- Assign button
+
+BOOKED PHOTOGRAPHER CARD:
+- Faded/disabled appearance
+- Non-selectable
+- Show reason:
+  "Booked on 22 May • Wedding Shoot"
+
+IMPORTANT:
+Do NOT completely hide unavailable photographers.
+Show them faded with booking details.
+
+Include:
+- Search photographers
+- Filter by:
+  - Available
+  - Busy
+  - Assigned
+  - By date
+
+--------------------------------------------------
+
+ASSIGNMENT FLOW:
+
+Admin:
+- opens request
+- reviews details
+- selects available photographer
+- confirms assignment
+
+Add:
+Confirmation popup before assignment.
+
+Popup example:
+"Assign photographer and confirm booking?"
+
+Buttons:
+- Cancel
+- Confirm
+
+--------------------------------------------------
+
+PHOTOGRAPHER MANAGEMENT PAGE:
+
+Create a clean photographer list/grid page.
+
+Include:
+- Search bar
+- Filters
+- Add new photographer button
+
+Each photographer card:
+- Profile image
+- Name
+- Specialization
+- Status badge
+- Working days
+- Current booking status
+
+Buttons:
+- View Profile
+- Edit
+
+--------------------------------------------------
+
+PHOTOGRAPHER PROFILE PAGE:
+
+Detailed photographer profile page.
+
+Include:
+
+PROFILE HEADER:
+- Photo
+- Name
+- Contact
+- Specialization
+- Status
+
+INFORMATION SECTION:
+- Experience
+- Skills/services
+- Working days
+- City/location
+
+COMPLETED SHOOTS SECTION:
+Display previous completed projects/events.
+
+UPCOMING BOOKINGS SECTION:
+Display current and future assigned events.
+
+Include:
+- Small availability timeline or booking indicator.
+
+Buttons:
+- Edit profile
+- Update availability
+
+--------------------------------------------------
+
+PRICE MANAGEMENT PAGE:
+
+Create a simple pricing management UI.
+
+Admin can:
+- Manage package prices
+- Edit add-ons pricing
+- Update event pricing
+
+Use:
+- Table layout
+- Edit buttons
+- Save changes button
+
+--------------------------------------------------
+
+NOTIFICATION SYSTEM UI:
+
+Create notification dropdown/cards for:
+- New booking request
+- Photographer unavailable
+- Booking confirmed
+- Assignment updates
+
+--------------------------------------------------
+
+RESPONSIVENESS:
+
+Dashboard must work on:
+- Desktop
+- Tablet
+- Mobile
+
+Requirements:
+- Sidebar collapses on smaller screens
+- Tables become horizontally scrollable
+- Maintain clean spacing
+
+--------------------------------------------------
+
+UI/UX RULES:
+
+- Prioritize usability over aesthetics
+- Use clean spacing
+- Keep interactions simple
+- Use subtle hover states
+- Maintain consistent layout system
+- Avoid clutter
+- Make tables easy to scan
+- Keep workflow intuitive
+
+--------------------------------------------------
+
+FINAL GOAL:
+
+Create a practical and professional photography management admin dashboard that:
+- helps admin manage bookings efficiently
+- avoids scheduling conflicts
+- manages photographers clearly
+- keeps workflow simple and organized
+- feels modern and production-ready
+- focuses on real business operations instead of flashy visuals
