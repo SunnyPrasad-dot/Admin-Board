@@ -5,11 +5,11 @@ import path from "path";
 
 export default defineConfig({
   plugins: [
-    react({ include: /\.(jsx|js|tsx|ts)$/ }),
+    react({ include: /\.(jsx|js)$/ }),
     tailwindcss(),
   ],
   resolve: {
-    extensions: [".mjs", ".jsx", ".js", ".mts", ".tsx", ".ts", ".json"],
+    extensions: [".mjs", ".jsx", ".js", ".json"],
     alias: {
       "@": path.resolve(import.meta.dirname, "src"),
     },
