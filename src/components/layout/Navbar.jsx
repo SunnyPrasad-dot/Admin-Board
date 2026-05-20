@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth";
 import { Bell, Menu } from "lucide-react";
@@ -30,7 +31,7 @@ function PageTitle() {
     path === "/" ? location === "/" : location.startsWith(path)
   );
   return (
-    <h2 className="text-sm font-semibold text-slate-700 hidden sm:block">
+    <h2 className="text-sm font-semibold text-foreground hidden sm:block">
       {matched ? matched[1] : ""}
     </h2>
   );
@@ -38,13 +39,18 @@ function PageTitle() {
 
 export default function Navbar() {
   const { user } = useAuth();
-  const [, setLocation] = useLocation();
+  const [location, setLocation] = useLocation();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location]);
 
   return (
-    <header className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4 sm:px-6 sticky top-0 z-10 shadow-sm">
+    <header className="h-14 bg-card/80 backdrop-blur-md border-b border-border flex items-center justify-between px-4 sm:px-6 sticky top-0 z-10 shadow-sm">
       <div className="flex items-center gap-3">
         {/* Mobile menu */}
-        <Sheet>
+        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon" className="md:hidden h-8 w-8">
               <Menu className="h-4 w-4" />
@@ -59,26 +65,26 @@ export default function Navbar() {
 
       <div className="flex items-center gap-2">
         <Button variant="ghost" size="icon" className="relative h-8 w-8">
-          <Bell className="h-4 w-4 text-slate-500" />
-          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-indigo-500 ring-2 ring-white" />
+          <Bell className="h-4 w-4 text-muted-foreground" />
+          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-primary ring-2 ring-background" />
         </Button>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-lg hover:bg-slate-100 transition-colors">
+            <button className="flex items-center gap-2 pl-1 pr-2 py-1 rounded-lg hover:bg-muted transition-colors">
               <Avatar className="h-7 w-7">
                 <AvatarImage src="https://i.pravatar.cc/100?img=60" />
-                <AvatarFallback className="bg-indigo-100 text-indigo-600 text-xs font-semibold">
+                <AvatarFallback className="bg-primary/20 text-primary-foreground text-xs font-semibold">
                   {user?.name?.charAt(0) || "A"}
                 </AvatarFallback>
               </Avatar>
-              <span className="hidden sm:block text-sm font-medium text-slate-700">
+              <span className="hidden sm:block text-sm font-medium text-foreground">
                 {user?.name}
               </span>
             </button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-44">
-            <DropdownMenuLabel className="text-xs text-slate-500">My Account</DropdownMenuLabel>
+            <DropdownMenuLabel className="text-xs text-muted-foreground">My Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={() => setLocation("/profile")}>Profile</DropdownMenuItem>
             <DropdownMenuItem onClick={() => setLocation("/settings")}>Settings</DropdownMenuItem>

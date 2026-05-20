@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @plugin "@tailwindcss/typography";
 
+/* Use class-based dark mode: .dark on <html> triggers dark styles */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -60,6 +61,7 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* ─── LIGHT MODE (default) ─── */
 :root {
   --button-outline: rgba(0,0,0, .10);
   --badge-outline: rgba(0,0,0, .05);
@@ -67,45 +69,44 @@
   --elevate-1: rgba(0,0,0, .03);
   --elevate-2: rgba(0,0,0, .08);
 
-  --background: 210 40% 96%; /* slate-100 */
-  --foreground: 222 47% 11%; /* slate-900 */
-  --border: 214 32% 91%;     /* slate-200 */
+  --background: 45 62% 89%;      /* Cream */
+  --foreground: 162 36% 11%;     /* Dark green/charcoal */
+  --border: 39 48% 48%;          /* Tan */
 
-  --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
-  --card-border: 214 32% 91%;
+  --card: 45 62% 95%;            /* Lighter Cream */
+  --card-foreground: 162 36% 11%;
+  --card-border: 39 48% 48%;
 
-  /* DARK SIDEBAR */
-  --sidebar: 222 47% 11%;           /* #0F172A slate-900 */
-  --sidebar-foreground: 215 20% 65%; /* slate-400 */
-  --sidebar-border: 217 33% 17%;    /* slate-800 */
-  --sidebar-primary: 238 84% 67%;   /* indigo-500 */
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 217 33% 17%;
-  --sidebar-accent-foreground: 0 0% 100%;
-  --sidebar-ring: 238 84% 67%;
+  --sidebar: 162 36% 11%;        /* Dark green sidebar */
+  --sidebar-foreground: 45 62% 89%;
+  --sidebar-border: 39 48% 48%;
+  --sidebar-primary: 39 59% 61%; /* Gold accent */
+  --sidebar-primary-foreground: 162 36% 11%;
+  --sidebar-accent: 162 30% 16%;
+  --sidebar-accent-foreground: 45 62% 89%;
+  --sidebar-ring: 39 59% 61%;
 
-  --popover: 0 0% 100%;
-  --popover-foreground: 222 47% 11%;
-  --popover-border: 214 32% 91%;
+  --popover: 45 62% 95%;
+  --popover-foreground: 162 36% 11%;
+  --popover-border: 39 48% 48%;
 
-  --primary: 238 84% 67%;   /* #6366F1 indigo-500 */
-  --primary-foreground: 0 0% 100%;
+  --primary: 39 59% 61%;         /* Gold */
+  --primary-foreground: 162 36% 11%;
 
-  --secondary: 262 80% 70%; /* violet */
-  --secondary-foreground: 0 0% 100%;
+  --secondary: 39 48% 48%;
+  --secondary-foreground: 45 62% 89%;
 
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 47%;
+  --muted: 45 40% 82%;
+  --muted-foreground: 162 20% 40%;
 
-  --accent: 210 40% 94%;
-  --accent-foreground: 222 47% 11%;
+  --accent: 39 59% 61%;
+  --accent-foreground: 162 36% 11%;
 
   --destructive: 0 84% 60%;
   --destructive-foreground: 0 0% 100%;
 
-  --input: 214 32% 91%;
-  --ring: 238 84% 67%;
+  --input: 39 48% 48%;
+  --ring: 39 59% 61%;
 
   --chart-1: 160 60% 45%;
   --chart-2: 38 92% 50%;
@@ -127,11 +128,123 @@
   --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
+/* ─── LIGHT MODE THEME COLOR OVERRIDES ─── */
+/* Only applied when NOT in dark mode */
+:root:not(.dark)[data-theme="cream"] {
+  --primary: 45 62% 75%;
+  --primary-foreground: 162 36% 11%;
+  --sidebar-primary: 45 62% 75%;
+  --sidebar-primary-foreground: 162 36% 11%;
+  --accent: 45 62% 75%;
+  --accent-foreground: 162 36% 11%;
+  --ring: 45 62% 75%;
+}
+
+:root:not(.dark)[data-theme="green"] {
+  --primary: 162 50% 30%;
+  --primary-foreground: 45 62% 95%;
+  --sidebar-primary: 162 50% 30%;
+  --sidebar-primary-foreground: 45 62% 95%;
+  --accent: 162 50% 30%;
+  --accent-foreground: 45 62% 95%;
+  --ring: 162 50% 30%;
+}
+
+:root:not(.dark)[data-theme="gold"] {
+  --primary: 39 59% 61%;
+  --primary-foreground: 162 36% 11%;
+  --sidebar-primary: 39 59% 61%;
+  --sidebar-primary-foreground: 162 36% 11%;
+  --accent: 39 59% 61%;
+  --accent-foreground: 162 36% 11%;
+  --ring: 39 59% 61%;
+}
+
+/* ─── DARK MODE ─── */
+/* Applied when .dark class is on <html> */
+.dark {
+  --background: 222 47% 7%;      /* Near black */
+  --foreground: 210 40% 95%;     /* Off white */
+  --border: 217 33% 20%;         /* Dark grey border */
+
+  --card: 222 47% 11%;           /* Dark card */
+  --card-foreground: 210 40% 95%;
+  --card-border: 217 33% 20%;
+
+  --sidebar: 224 71% 4%;         /* Almost black sidebar */
+  --sidebar-foreground: 210 40% 90%;
+  --sidebar-border: 217 33% 15%;
+  --sidebar-primary: 221 83% 53%;  /* Blue accent */
+  --sidebar-primary-foreground: 210 40% 98%;
+  --sidebar-accent: 222 47% 14%;
+  --sidebar-accent-foreground: 210 40% 90%;
+  --sidebar-ring: 221 83% 53%;
+
+  --popover: 222 47% 11%;
+  --popover-foreground: 210 40% 95%;
+  --popover-border: 217 33% 20%;
+
+  --primary: 221 83% 53%;        /* Blue 600 */
+  --primary-foreground: 210 40% 98%;
+
+  --secondary: 217 33% 17%;
+  --secondary-foreground: 210 40% 95%;
+
+  --muted: 217 33% 17%;
+  --muted-foreground: 215 20% 60%;
+
+  --accent: 221 83% 53%;
+  --accent-foreground: 210 40% 98%;
+
+  --destructive: 0 62% 50%;
+  --destructive-foreground: 0 0% 100%;
+
+  --input: 217 33% 20%;
+  --ring: 221 83% 53%;
+
+  --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+  --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+}
+
+/* ─── BASE STYLES ─── */
 @layer base {
   * {
     @apply border-border;
+    transition: background-color 0.25s ease, border-color 0.25s ease, color 0.15s ease;
   }
+
+  html {
+    color-scheme: light;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
   body {
-    @apply font-sans antialiased bg-background text-foreground;
+    @apply font-sans antialiased;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  /* Light mode body: warm luxury gradient */
+  html:not(.dark) body {
+    background-image:
+      linear-gradient(135deg, transparent 35%, rgba(214, 173, 96, 0.1) 40%, rgba(214, 173, 96, 0.3) 50%, rgba(214, 173, 96, 0.1) 60%, transparent 65%),
+      linear-gradient(135deg, transparent 20%, rgba(255, 255, 255, 0.5) 30%, transparent 40%),
+      linear-gradient(135deg, transparent 70%, rgba(255, 255, 255, 0.4) 80%, transparent 90%);
+    background-size: cover;
+    background-attachment: fixed;
+  }
+
+  /* Dark mode body: clean solid dark — no gradient */
+  html.dark body {
+    background-image: none;
+    background-color: hsl(222, 47%, 7%);
   }
 }
