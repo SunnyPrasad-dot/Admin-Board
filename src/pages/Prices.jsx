@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useGetPackages, useGetAddons, useUpdatePackage, useUpdateAddon } from "@/lib/api";
+import { useSettings } from "@/contexts/SettingsContext";
+import { formatCurrency } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +14,7 @@ function EditableRow({ item, onSave, columns }) {
   const [isEditing, setIsEditing] = useState(false);
   const [values, setValues] = useState(item);
   const { toast } = useToast();
+  const { settings } = useSettings();
 
   const handleSave = () => {
     onSave(item.id, values);
@@ -39,7 +42,7 @@ function EditableRow({ item, onSave, columns }) {
               className="h-8 py-1 px-2"
             />
           ) : (
-            col.type === "number" ? `$${item[col.key]}` : item[col.key]
+            col.type === "number" ? formatCurrency(item[col.key], settings.currency) : item[col.key]
           )}
         </TableCell>
       ))}
@@ -57,11 +60,34 @@ function EditableRow({ item, onSave, columns }) {
   );
 }
 
+const FAKE_PACKAGES = [
+  { id: 1, name: "Full Day Premium", category: "Wedding", price: 3500, duration: "10 hours" },
+  { id: 2, name: "Half Day Events", category: "Events", price: 1800, duration: "6 hours" },
+  { id: 3, name: "Mini Portrait Session", category: "Portrait", price: 350, duration: "1 hour" },
+];
+
+const FAKE_ADDONS = [
+  { id: 1, name: "Drone Photography", price: 500, description: "Aerial shots of venue" },
+  { id: 2, name: "Second Shooter", price: 800, description: "Additional photographer for full day" },
+  { id: 3, name: "Same-Day Preview", price: 250, description: "10 edited photos within 24h" },
+];
+
 export default function Prices() {
-  const { data: packages, isLoading: isLoadingPackages } = useGetPackages();
-  const { data: addons, isLoading: isLoadingAddons } = useGetAddons();
+  const { data: apiPackages, isLoading: isLoadingPackages } = useGetPackages();
+  const { data: apiAddons, isLoading: isLoadingAddons } = useGetAddons();
   const updatePackage = useUpdatePackage();
   const updateAddon = useUpdateAddon();
+  const { toast } = useToast();
+
+  const [localPackages, setLocalPackages] = useState(FAKE_PACKAGES);
+  
+  const packages = apiPackages?.length ? apiPackages : localPackages;
+  const addons = apiAddons?.length ? apiAddons : FAKE_ADDONS;
+
+  const handleAddNew = () => {
+    setLocalPackages([...localPackages, { id: Date.now(), name: "New Package", category: "General", price: 0, duration: "1 hour" }]);
+    toast({ title: "Row Added", description: "Edit the new row to save your package details." });
+  };
   
   const handleSavePackage = (id, data) => updatePackage.mutate({ id, data });
   const handleSaveAddon = (id, data) => updateAddon.mutate({ id, data });
@@ -83,7 +109,7 @@ export default function Prices() {
     <div className="space-y-8">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold text-foreground">Price Management</h1>
-        <Button>Add New</Button>
+        <Button onClick={handleAddNew} className="bg-primary hover:bg-primary/90">Add New</Button>
       </div>
 
       <Card>

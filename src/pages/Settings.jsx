@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useSettings } from "@/contexts/SettingsContext";
+import { useToast } from "@/hooks/use-toast";
 
 // Custom Toggle Component
 function Toggle({ label, description, checked, onChange }) {
@@ -17,7 +18,7 @@ function Toggle({ label, description, checked, onChange }) {
         onClick={() => onChange(!checked)}
         className={`relative inline-flex h-4 w-7 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${checked ? 'bg-primary' : 'bg-slate-300 dark:bg-slate-700'}`}
       >
-        <span className={`pointer-events-none inline-block h-3 w-3 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${checked ? 'translate-x-3' : 'translate-x-0'}`} />
+        <span className={`pointer-events-none inline-block h-3 w-3 transform rounded-full bg-white dark:bg-card shadow ring-0 transition duration-200 ease-in-out ${checked ? 'translate-x-3' : 'translate-x-0'}`} />
       </button>
     </div>
   );
@@ -37,7 +38,8 @@ function ColorCircle({ color, selected, onClick }) {
 }
 
 export default function Settings() {
-  const { settings, updateSetting } = useSettings();
+  const { settings, updateSetting, resetSettings } = useSettings();
+  const { toast } = useToast();
 
   return (
     <div className="space-y-5 pb-20">
@@ -113,12 +115,56 @@ export default function Settings() {
                     <ColorCircle color="#F4EBD0" selected={settings.themeColor === '#F4EBD0'} onClick={() => updateSetting('themeColor', '#F4EBD0')} />
                     <ColorCircle color="#D6AD60" selected={settings.themeColor === '#D6AD60'} onClick={() => updateSetting('themeColor', '#D6AD60')} />
                     <ColorCircle color="#122620" selected={settings.themeColor === '#122620'} onClick={() => updateSetting('themeColor', '#122620')} />
+                    
+                    <div className="w-px h-6 bg-border/60 mx-1"></div>
+                    
+                    <div className={`relative h-6 w-6 rounded-full overflow-hidden shadow-sm cursor-pointer transition-transform ${!['#F4EBD0', '#D6AD60', '#122620'].includes(settings.themeColor) ? 'ring-2 ring-primary ring-offset-2 ring-offset-background scale-110' : 'border border-border hover:scale-110'}`}>
+                      <input 
+                        type="color" 
+                        value={settings.themeColor} 
+                        onChange={(e) => updateSetting('themeColor', e.target.value)}
+                        className="absolute -top-2 -left-2 h-10 w-10 cursor-pointer"
+                        title="Pick Custom Theme Color"
+                      />
+                    </div>
                   </div>
                 )}
               </div>
 
               {/* Sidebar Settings */}
-              <div className="pt-2 border-t border-border/50">
+              <div className="pt-4 space-y-4 border-t border-border/50">
+                <div className="flex items-center justify-between">
+                  <div className="flex flex-col">
+                    <span className="text-[13px] font-medium text-foreground">Sidebar Color</span>
+                    <span className="text-[11px] text-muted-foreground mt-0.5">Custom color for the sidebar background.</span>
+                  </div>
+                  {settings.themeMode === 'dark' ? (
+                    <span className="flex items-center gap-1 text-[10px] font-medium text-muted-foreground bg-muted px-2 py-0.5 rounded-full">
+                      <Lock className="h-2.5 w-2.5" /> Dark Mode
+                    </span>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      {settings.sidebarColor && (
+                        <button 
+                          onClick={() => updateSetting('sidebarColor', '')}
+                          className="text-[11px] text-muted-foreground hover:text-foreground underline transition-colors"
+                        >
+                          Reset
+                        </button>
+                      )}
+                      <div className="relative h-7 w-7 rounded-full overflow-hidden border-2 border-border shadow-sm cursor-pointer hover:scale-110 transition-transform">
+                        <input 
+                          type="color" 
+                          value={settings.sidebarColor || '#12261E'} 
+                          onChange={(e) => updateSetting('sidebarColor', e.target.value)}
+                          className="absolute -top-2 -left-2 h-12 w-12 cursor-pointer"
+                          title="Pick Custom Color"
+                        />
+                      </div>
+                    </div>
+                  )}
+                </div>
+
                  <Toggle 
                    label="Collapse Sidebar" 
                    description="Minimize sidebar to icons only." 
@@ -210,8 +256,8 @@ export default function Settings() {
           className="rounded-lg border-border hover:bg-muted text-foreground transition-all text-xs h-9"
           onClick={() => {
             if (window.confirm("Are you sure you want to reset all settings to default?")) {
-               localStorage.removeItem('tk_admin_settings');
-               window.location.reload();
+               resetSettings();
+               toast({ title: "Settings Reset", description: "All settings have been restored to defaults." });
             }
           }}
         >

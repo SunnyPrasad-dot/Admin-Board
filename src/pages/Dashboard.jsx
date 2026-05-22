@@ -2,6 +2,7 @@ import { useGetDashboardSummary } from "@/lib/api";
 import { Skeleton } from "@/components/ui/skeleton";
 import { format } from "date-fns";
 import { Link } from "wouter";
+import { getInitials } from "@/lib/utils";
 import { Calendar, Users, MessageSquare, CheckCircle, TrendingUp, ArrowUpRight, Clock } from "lucide-react";
 
 const STATUS_CONFIG = {
@@ -30,9 +31,9 @@ export default function Dashboard() {
   const { data: summary, isLoading } = useGetDashboardSummary();
 
   const stats = [
-    { title: "Total Requests",          value: summary?.totalRequests || 48,          icon: Calendar,      color: "text-indigo-500", bg: "bg-indigo-500/10", change: "+12%", trend: "up" },
+    { title: "Total Requests",          value: summary?.totalRequests || 48,          icon: Calendar,      color: "text-primary", bg: "bg-primary/10", change: "+12%", trend: "up" },
     { title: "Confirmed Bookings",      value: summary?.confirmedBookings || 32,       icon: CheckCircle,   color: "text-emerald-500", bg: "bg-emerald-500/10", change: "+8%", trend: "up" },
-    { title: "Inquiry Requests",        value: summary?.inquiryRequests || 11,         icon: MessageSquare, color: "text-amber-500", bg: "bg-amber-500/10", change: "+3", trend: "up" },
+    { title: "Inquiry Requests",        value: summary?.inquiryRequests || 11,         icon: MessageSquare, color: "text-amber-500", bg: "bg-amber-500/10", change: "+3%", trend: "up" },
     { title: "Available Photographers", value: summary?.availablePhotographers || 5,   icon: Users,         color: "text-violet-500", bg: "bg-violet-500/10", change: "5 of 7", trend: "neutral" },
   ];
 
@@ -99,7 +100,7 @@ export default function Dashboard() {
                 <Link key={b.id} href={`/bookings/${b.id}`} className="flex items-center gap-4 px-6 py-3.5 hover:bg-muted/50 transition-colors cursor-pointer">
                   <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                     <span className="text-xs font-bold text-primary">
-                      {b.clientName.split(" ").map(w => w[0]).join("").slice(0,2)}
+                      {getInitials(b.clientName)}
                     </span>
                   </div>
                   <div className="flex-1 min-w-0">
@@ -128,7 +129,7 @@ export default function Dashboard() {
               <div key={inq.id} className="px-5 py-4">
                 <div className="flex items-center gap-2 mb-1.5">
                   <div className="h-6 w-6 rounded-full bg-primary/15 flex items-center justify-center shrink-0">
-                    <span className="text-[10px] font-bold text-primary">{inq.name[0]}</span>
+                    <span className="text-[10px] font-bold text-primary">{getInitials(inq.name)}</span>
                   </div>
                   <span className="text-xs font-semibold text-foreground">{inq.name}</span>
                   <span className="ml-auto text-[10px] text-muted-foreground">{format(new Date(inq.createdAt), "MMM d")}</span>

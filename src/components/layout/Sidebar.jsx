@@ -65,7 +65,10 @@ export default function Sidebar() {
   const isCollapsed = settings.collapseSidebar;
 
   return (
-    <div className="flex flex-col h-full bg-sidebar transition-all duration-300">
+    <div 
+      className="flex flex-col h-full bg-sidebar transition-all duration-300"
+      style={settings.themeMode !== 'dark' && settings.sidebarColor ? { backgroundColor: settings.sidebarColor } : undefined}
+    >
       {/* Logo */}
       <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'gap-3'} px-5 py-5 border-b border-white/5`}>
         <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/20 ring-1 ring-primary/30">

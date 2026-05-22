@@ -2,6 +2,9 @@ import { useGetInquiries } from "@/lib/api";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Mail, Phone, MessageSquare, Calendar, ChevronRight, Clock } from "lucide-react";
+import { getInitials } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
+import { Link } from "wouter";
 
 const FAKE_INQUIRIES = [
   {
@@ -12,7 +15,7 @@ const FAKE_INQUIRIES = [
     eventType: "Wedding",
     message: "Hi, I'm planning a wedding for June 14, 2026 at The Ritz-Carlton in Boston. Looking for full day coverage for approximately 200 guests. We'd love to discuss packages that include an engagement shoot as well. Could you provide availability and detailed pricing?",
     createdAt: "2026-05-08",
-    avatarColor: "bg-indigo-100 text-indigo-700",
+    avatarColor: "bg-primary/20 text-primary",
   },
   {
     id: 2,
@@ -69,18 +72,19 @@ const FAKE_INQUIRIES = [
 export default function Inquiries() {
   const { data: apiInquiries, isLoading } = useGetInquiries();
   const inquiries = apiInquiries?.length ? apiInquiries : FAKE_INQUIRIES;
+  const { toast } = useToast();
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-slate-900">Inquiry Requests</h1>
-        <p className="text-sm text-slate-500 mt-0.5">{inquiries.length} pending inquiries</p>
+        <h1 className="text-xl font-bold text-slate-900 dark:text-foreground">Inquiry Requests</h1>
+        <p className="text-sm text-slate-500 dark:text-muted-foreground mt-0.5">{inquiries.length} pending inquiries</p>
       </div>
 
       {isLoading ? (
         <div className="space-y-4">
           {Array(3).fill(0).map((_, i) => (
-            <div key={i} className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+            <div key={i} className="bg-white dark:bg-card rounded-2xl border border-slate-100 dark:border-border/60 shadow-sm p-6" >
               <div className="flex gap-4">
                 <Skeleton className="h-12 w-12 rounded-full shrink-0" />
                 <div className="flex-1 space-y-2">
@@ -93,17 +97,17 @@ export default function Inquiries() {
           ))}
         </div>
       ) : !inquiries.length ? (
-        <div className="bg-white rounded-2xl border border-dashed border-slate-200 py-16 text-center">
+        <div className="bg-white dark:bg-card rounded-2xl border border-dashed border-slate-200 dark:border-border py-16 text-center" >
           <MessageSquare className="h-8 w-8 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-500 text-sm">No inquiry requests yet.</p>
+          <p className="text-slate-500 dark:text-muted-foreground text-sm">No inquiry requests yet.</p>
         </div>
       ) : (
         <div className="space-y-4">
           {inquiries.map((inq, idx) => {
-            const avatarColor = inq.avatarColor || FAKE_INQUIRIES[idx % FAKE_INQUIRIES.length]?.avatarColor || "bg-indigo-100 text-indigo-700";
-            const initials = inq.name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
+            const avatarColor = inq.avatarColor || FAKE_INQUIRIES[idx % FAKE_INQUIRIES.length]?.avatarColor || "bg-primary/20 text-primary";
+            const initials = getInitials(inq.name);
             return (
-              <div key={inq.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+              <div key={inq.id} className="bg-white dark:bg-card rounded-2xl border border-slate-100 dark:border-border/60 shadow-sm overflow-hidden">
                 <div className="p-6">
                   <div className="flex items-start gap-4">
                     {/* Avatar */}
@@ -114,13 +118,13 @@ export default function Inquiries() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-4 flex-wrap">
                         <div>
-                          <h3 className="font-semibold text-slate-900 text-base">{inq.name}</h3>
+                          <h3 className="font-semibold text-slate-900 dark:text-foreground text-base">{inq.name}</h3>
                           <div className="flex items-center flex-wrap gap-3 mt-1">
-                            <span className="inline-flex items-center gap-1 text-xs text-slate-500">
+                            <span className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-muted-foreground">
                               <Mail className="h-3 w-3" /> {inq.email}
                             </span>
                             {inq.phone && (
-                              <span className="inline-flex items-center gap-1 text-xs text-slate-500">
+                              <span className="inline-flex items-center gap-1 text-xs text-slate-500 dark:text-muted-foreground">
                                 <Phone className="h-3 w-3" /> {inq.phone}
                               </span>
                             )}
@@ -128,36 +132,38 @@ export default function Inquiries() {
                         </div>
                         <div className="flex items-center gap-3 shrink-0">
                           {(inq.eventType) && (
-                            <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold bg-indigo-50 text-indigo-700 ring-1 ring-indigo-200">
+                            <span className="inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold bg-primary/10 text-primary ring-1 ring-primary/20">
                               {inq.eventType}
                             </span>
                           )}
-                          <span className="inline-flex items-center gap-1 text-[11px] text-slate-400">
+                          <span className="inline-flex items-center gap-1 text-[11px] text-slate-400 dark:text-muted-foreground/70">
                             <Clock className="h-3 w-3" />
                             {format(new Date(inq.createdAt), "MMM d, yyyy")}
                           </span>
                         </div>
                       </div>
 
-                      <p className="mt-3 text-sm text-slate-600 leading-relaxed line-clamp-3">
+                      <p className="mt-3 text-sm text-slate-600 dark:text-foreground/90 leading-relaxed line-clamp-3">
                         {inq.message}
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="px-6 py-3.5 bg-slate-50/60 border-t border-slate-100 flex items-center justify-between gap-3">
-                  <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                <div className="px-6 py-3.5 bg-slate-50 dark:bg-slate-900/50/60 dark:bg-slate-900/30 border-t border-slate-100 dark:border-border/60 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-muted-foreground">
                     <Calendar className="h-3.5 w-3.5" />
                     Received {format(new Date(inq.createdAt), "MMMM d, yyyy")}
                   </div>
                   <div className="flex gap-2">
-                    <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-medium text-slate-600 hover:bg-white hover:border-slate-300 transition-all">
+                    <button onClick={() => toast({ title: "Not implemented yet", description: "Reply functionality will be added soon." })} className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-border text-xs font-medium text-slate-600 dark:text-foreground hover:bg-white dark:bg-card hover:border-slate-300 dark:hover:bg-primary/10 hover:border-slate-300 transition-all">
                       <Mail className="h-3.5 w-3.5" /> Reply
                     </button>
-                    <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium transition-all">
-                      Create Booking <ChevronRight className="h-3.5 w-3.5" />
-                    </button>
+                    <Link href="/bookings">
+                      <button className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary hover:bg-primary/90 text-white text-xs font-medium transition-all dark:hover:bg-primary/90">
+                        Create Booking <ChevronRight className="h-3.5 w-3.5" />
+                      </button>
+                    </Link>
                   </div>
                 </div>
               </div>

@@ -17,7 +17,7 @@ export default function Layout({ children }) {
       </aside>
 
       {/* Main Content */}
-      <main className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${settings.collapseSidebar ? 'md:ml-20' : 'md:ml-60'}`}>
+      <main className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${settings.collapseSidebar ? 'md:pl-20' : 'md:pl-60'}`}>
         <Navbar />
 
         {/* Page */}
