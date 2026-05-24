@@ -10,21 +10,24 @@ export default function Layout({ children }) {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen flex bg-transparent">
-      {/* Desktop Sidebar */}
-      <aside className={`hidden md:flex flex-col shrink-0 fixed inset-y-0 z-20 transition-all duration-300 ${settings.collapseSidebar ? 'w-20' : 'w-60'}`}>
-        <Sidebar />
-      </aside>
+    <div className="min-h-screen flex flex-col bg-transparent">
+      {/* Navbar - Fixed at top */}
+      <Navbar />
 
-      {/* Main Content */}
-      <main className={`flex-1 flex flex-col min-h-screen transition-all duration-300 ${settings.collapseSidebar ? 'md:pl-20' : 'md:pl-60'}`}>
-        <Navbar />
+      <div className="flex flex-1 overflow-hidden">
+        {/* Desktop Sidebar */}
+        <aside className={`hidden md:flex flex-col shrink-0 fixed inset-y-14 z-20 transition-all duration-300 ${settings.collapseSidebar ? 'w-20' : 'w-60'}`}>
+          <Sidebar />
+        </aside>
 
-        {/* Page */}
-        <div className="flex-1 p-5 sm:p-7 overflow-auto">
-          {children}
-        </div>
-      </main>
+        {/* Main Content */}
+        <main className={`flex-1 flex flex-col min-h-screen transition-all duration-300 overflow-y-auto pt-14 ${settings.collapseSidebar ? 'md:pl-20' : 'md:pl-60'}`}>
+          {/* Page */}
+          <div className="flex-1 p-5 sm:p-7">
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   );
 }

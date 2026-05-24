@@ -31,7 +31,7 @@ function PageTitle() {
     path === "/" ? location === "/" : location.startsWith(path)
   );
   return (
-    <h2 className="text-sm font-semibold text-foreground hidden sm:block">
+    <h2 className="text-sm font-semibold text-foreground">
       {matched ? matched[1] : ""}
     </h2>
   );
@@ -47,7 +47,7 @@ export default function Navbar() {
   }, [location]);
 
   return (
-    <header className="h-14 bg-card/80 backdrop-blur-md border-b border-border flex items-center justify-between px-4 sm:px-6 sticky top-0 z-10 shadow-sm">
+    <header className="h-14 bg-card/80 backdrop-blur-md border-b border-border flex items-center justify-between px-4 sm:px-6 fixed top-0 left-0 right-0 z-40 shadow-sm">
       <div className="flex items-center gap-3">
         {/* Mobile menu */}
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>

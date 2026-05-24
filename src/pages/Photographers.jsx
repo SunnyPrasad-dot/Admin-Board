@@ -128,51 +128,77 @@ export default function Photographers() {
           <p className="text-slate-500 dark:text-muted-foreground text-sm">No photographers match your search.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {photographers.map((p) => {
-            const sc = p.isActive ? STATUS_CONFIG.active : STATUS_CONFIG.inactive;
-            return (
-              <div key={p.id} className="bg-white dark:bg-card rounded-2xl border border-slate-100 dark:border-border/60 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
-                <div className="p-5">
-                  <div className="flex items-start justify-between gap-4 mb-4">
-                    <img src={p.avatar || `https://i.pravatar.cc/300?u=${p.id}`} alt={p.name} className="h-16 w-16 rounded-2xl object-cover ring-1 ring-slate-100 shadow-sm" />
-                    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ${sc.cls}`}>
-                      <span className={`h-1.5 w-1.5 rounded-full ${sc.dot}`} />
-                      {sc.label}
-                    </span>
+        <>
+          <div className="grid grid-cols-2 gap-3 md:hidden">
+            {photographers.map((p) => {
+              const dot = p.isActive ? "bg-emerald-500" : "bg-slate-400";
+              return (
+                <Link
+                  key={p.id}
+                  href={`/photographers/${p.id}`}
+                  className="group flex items-center gap-3 rounded-2xl border border-border/60 bg-card p-3 shadow-sm transition hover:border-primary/30"
+                >
+                  <img
+                    src={p.avatar || `https://i.pravatar.cc/100?u=${p.id}`}
+                    alt={p.name}
+                    className="h-12 w-12 rounded-full object-cover ring-1 ring-slate-200 dark:ring-slate-800"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-semibold text-foreground">{p.name}</p>
+                    <p className="truncate text-[11px] text-slate-500 dark:text-muted-foreground">{getRoleLabel(p.role)}</p>
                   </div>
+                  <span className={`h-3.5 w-3.5 rounded-full ${dot} ring-1 ring-white/80 shadow-sm`} />
+                </Link>
+              );
+            })}
+          </div>
 
-                  <h3 className="font-bold text-slate-900 dark:text-foreground text-base">{p.name}</h3>
-                  <p className="text-sm text-slate-500 dark:text-muted-foreground mt-0.5">{getRoleLabel(p.role)}</p>
+          <div className="hidden md:grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            {photographers.map((p) => {
+              const sc = p.isActive ? STATUS_CONFIG.active : STATUS_CONFIG.inactive;
+              return (
+                <div key={p.id} className="bg-white dark:bg-card rounded-2xl border border-slate-100 dark:border-border/60 shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+                  <div className="p-5">
+                    <div className="flex items-start justify-between gap-4 mb-4">
+                      <img src={p.avatar || `https://i.pravatar.cc/300?u=${p.id}`} alt={p.name} className="h-16 w-16 rounded-2xl object-cover ring-1 ring-slate-100 shadow-sm" />
+                      <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold ${sc.cls}`}>
+                        <span className={`h-1.5 w-1.5 rounded-full ${sc.dot}`} />
+                        {sc.label}
+                      </span>
+                    </div>
 
-                  <div className="space-y-2 mt-4 text-xs text-slate-500 dark:text-muted-foreground">
-                    <div className="flex items-center gap-1.5">
-                      <MapPin className="h-3.5 w-3.5" />
-                      {p.city}
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Mail className="h-3.5 w-3.5" />
-                      {p.email}
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Phone className="h-3.5 w-3.5" />
-                      {p.phone}
-                    </div>
-                  </div>
+                    <h3 className="font-bold text-slate-900 dark:text-foreground text-base">{p.name}</h3>
+                    <p className="text-sm text-slate-500 dark:text-muted-foreground mt-0.5">{getRoleLabel(p.role)}</p>
 
-                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-100 dark:border-border">
-                    <span className="text-xs text-slate-500 dark:text-muted-foreground">{p.bookedDates?.length || 0} booked dates</span>
-                    <Link href={`/photographers/${p.id}`}>
-                      <button className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-border text-xs font-semibold text-slate-700 dark:text-foreground hover:bg-primary/10 hover:border-primary/20 hover:text-primary transition-all">
-                        View
-                      </button>
-                    </Link>
+                    <div className="space-y-2 mt-4 text-xs text-slate-500 dark:text-muted-foreground">
+                      <div className="flex items-center gap-1.5">
+                        <MapPin className="h-3.5 w-3.5" />
+                        {p.city}
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Mail className="h-3.5 w-3.5" />
+                        {p.email}
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <Phone className="h-3.5 w-3.5" />
+                        {p.phone}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-100 dark:border-border">
+                      <span className="text-xs text-slate-500 dark:text-muted-foreground">{p.bookedDates?.length || 0} booked dates</span>
+                      <Link href={`/photographers/${p.id}`}>
+                        <button className="px-3 py-1.5 rounded-lg border border-slate-200 dark:border-border text-xs font-semibold text-slate-700 dark:text-foreground hover:bg-primary/10 hover:border-primary/20 hover:text-primary transition-all">
+                          View
+                        </button>
+                      </Link>
+                    </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        </>
       )}
     </div>
   );
