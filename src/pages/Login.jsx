@@ -23,14 +23,10 @@ export default function Login() {
     <div className="min-h-screen flex bg-slate-50 dark:bg-background dark:bg-slate-900/50">
       {/* Left panel */}
       <div className="hidden lg:flex lg:w-1/2 bg-[#0F172A] flex-col items-center justify-center p-16 relative overflow-hidden">
-        {/* Decorative circles */}
-        <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full bg-primary/10 blur-3xl" />
-        <div className="absolute -bottom-24 -right-24 w-96 h-96 rounded-full bg-violet-500/10 blur-3xl" />
-
-        <div className="relative z-10 max-w-sm text-center space-y-8">
+        <div className="relative z-10 max-w-sm text-center space-y-7">
           <div className="flex justify-center">
-            <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-primary/20 ring-1 ring-primary/30">
-              <Camera className="h-10 w-10 text-primary/70" />
+            <div className="flex h-24 w-24 items-center justify-center rounded-3xl bg-primary/20 ring-1 ring-primary/30 shadow-2xl shadow-primary/10">
+              <Camera className="h-12 w-12 text-primary/80" />
             </div>
           </div>
           <div>
@@ -38,20 +34,6 @@ export default function Login() {
             <p className="mt-3 text-slate-400 dark:text-muted-foreground/70 text-lg leading-relaxed">
               Professional photography management platform for your studio
             </p>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 text-left">
-            {[
-              { label: "Active Bookings", value: "48" },
-              { label: "Photographers", value: "7" },
-              { label: "Happy Clients", value: "320+" },
-              { label: "Events This Month", value: "12" },
-            ].map((s) => (
-              <div key={s.label} className="bg-white dark:bg-card/5 rounded-xl p-4 border border-white/5">
-                <p className="text-2xl font-bold text-white">{s.value}</p>
-                <p className="text-xs text-slate-500 dark:text-muted-foreground mt-1">{s.label}</p>
-              </div>
-            ))}
           </div>
         </div>
       </div>

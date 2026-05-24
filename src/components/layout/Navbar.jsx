@@ -18,9 +18,9 @@ import Sidebar from "@/components/layout/Sidebar";
 const PAGE_TITLES = {
   "/": "Dashboard",
   "/bookings": "Confirm Requests",
-  "/inquiries": "Inquiry Requests",
+  "/inquiries": "Enquiries",
   "/photographers": "Photographers",
-  "/prices": "Price Management",
+  "/prices": "Services",
   "/settings": "Settings",
   "/profile": "My Profile",
 };

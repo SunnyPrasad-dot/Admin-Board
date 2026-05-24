@@ -25,7 +25,7 @@ export const useAssignPhotographer       = stubMut;
 // Inquiries
 export const useGetInquiries             = stub;
 
-// Prices
+// Services
 export const useGetPackages              = stub;
 export const useGetAddons                = stub;
 export const useUpdatePackage            = stubMut;

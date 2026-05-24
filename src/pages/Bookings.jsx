@@ -1,4 +1,4 @@
- import { useState } from "react";
+import { useState } from "react";
 import { Link } from "wouter";
 import { useSettings } from "@/contexts/SettingsContext";
 import { formatCurrency, getInitials } from "@/lib/utils";
@@ -11,23 +11,70 @@ import { format } from "date-fns";
 import { Search, SlidersHorizontal, ArrowRight, MapPin, Calendar } from "lucide-react";
 
 const STATUS_CONFIG = {
-  new:       { label: "New",       cls: "bg-blue-50 text-blue-700 ring-1 ring-blue-200" },
-  pending:   { label: "Pending",   cls: "bg-amber-50 text-amber-700 ring-1 ring-amber-200" },
-  assigned:  { label: "Assigned",  cls: "bg-violet-50 text-violet-700 ring-1 ring-violet-200" },
+  pending: { label: "Pending", cls: "bg-amber-50 text-amber-700 ring-1 ring-amber-200" },
   confirmed: { label: "Confirmed", cls: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200" },
-  cancelled: { label: "Cancelled", cls: "bg-red-50 text-red-700 ring-1 ring-red-200" },
 };
 
 const FAKE_BOOKINGS = [
-  { id: 1, clientName: "Sarah & James Chen",     clientEmail: "sarah.chen@email.com",    eventType: "Wedding",         eventDate: "2026-06-14", location: "Grand Ballroom, New York",     status: "new",       totalPrice: 3500 },
-  { id: 2, clientName: "Emily Rodriguez",         clientEmail: "emily.r@email.com",       eventType: "Birthday Party",  eventDate: "2026-05-22", location: "Miami Beach Resort, FL",       status: "pending",   totalPrice: 1800 },
-  { id: 3, clientName: "Michael & Anna Thompson", clientEmail: "m.thompson@email.com",    eventType: "Wedding",         eventDate: "2026-07-04", location: "Napa Valley Vineyard, CA",     status: "assigned",  totalPrice: 5200 },
-  { id: 4, clientName: "David Park",              clientEmail: "dpark@acme.com",          eventType: "Corporate",       eventDate: "2026-05-18", location: "Marriott Conference, Chicago", status: "new",       totalPrice: 900 },
-  { id: 5, clientName: "Jessica Liu",             clientEmail: "jliu@email.com",          eventType: "Baby Shower",     eventDate: "2026-05-25", location: "Botanical Gardens, SF",        status: "pending",   totalPrice: 1200 },
-  { id: 6, clientName: "Robert & Maria Santos",   clientEmail: "rsantos@email.com",       eventType: "Wedding",         eventDate: "2026-08-12", location: "SF City Hall, CA",             status: "confirmed", totalPrice: 4800 },
-  { id: 7, clientName: "Amanda Foster",           clientEmail: "amanda.f@email.com",      eventType: "Graduation",      eventDate: "2026-06-20", location: "UCLA Campus, Los Angeles",     status: "new",       totalPrice: 650 },
-  { id: 8, clientName: "Tom & Lisa Bradley",      clientEmail: "tbradley@email.com",      eventType: "Vow Renewal",     eventDate: "2026-09-05", location: "Four Seasons Maui, Hawaii",   status: "pending",   totalPrice: 3100 },
+  {
+    id: 1,
+    customer: { name: "Abhay Savant", email: "abhaysavant7@gmail.com", phone: "7863854896", note: "Two day destination wedding coverage." },
+    events: [
+      { day: 1, date: "2026-05-20", location: "Greece", services: [{ serviceId: "69fb826f36a42d4eb833a2d5", quantity: 1 }] },
+      { day: 2, date: "2026-05-21", location: "Greece", services: [{ serviceId: "69fb826f36a42d4eb833a2d5", quantity: 1 }, { serviceId: "69fb82d036a42d4eb833a2de", quantity: 1 }] },
+    ],
+    addons: [{ serviceId: "69fb82d036a42d4eb833a2de", quantity: 1 }],
+    isConfirmed: false,
+    totalPrice: 24000,
+  },
+  {
+    id: 2,
+    customer: { name: "Pancholi Pankaj", email: "pancholipankaj255@gmail.com", phone: "9876543210", note: "Wedding photography" },
+    events: [{ day: 1, date: "2026-05-25", location: "Ahmedabad", services: [{ serviceId: "69fb826f36a42d4eb833a2d5", quantity: 2 }] }],
+    addons: [],
+    isConfirmed: true,
+    totalPrice: 18000,
+  },
+  {
+    id: 3,
+    customer: { name: "Riya Mehta", email: "riya.mehta@gmail.com", phone: "9825012345", note: "Need candid and drone coverage for engagement." },
+    events: [{ day: 1, date: "2026-06-02", location: "Surat", services: [{ serviceId: "69fb826f36a42d4eb833a2d5", quantity: 1 }] }],
+    addons: [{ serviceId: "69fb82d036a42d4eb833a2df", quantity: 1 }],
+    isConfirmed: false,
+    totalPrice: 10000,
+  },
+  {
+    id: 4,
+    customer: { name: "Nikhil Shah", email: "nikhil.shah@gmail.com", phone: "9909911223", note: "Reception event with album addon." },
+    events: [{ day: 1, date: "2026-06-12", location: "Vadodara", services: [{ serviceId: "69fb82d036a42d4eb833a2e0", quantity: 1 }] }],
+    addons: [{ serviceId: "69fb82d036a42d4eb833a2df", quantity: 2 }],
+    isConfirmed: true,
+    totalPrice: 22000,
+  },
+  {
+    id: 5,
+    customer: { name: "Ayesha Khan", email: "ayesha.khan@gmail.com", phone: "9898989898", note: "Haldi and sangeet on separate days." },
+    events: [
+      { day: 1, date: "2026-06-18", location: "Udaipur", services: [{ serviceId: "69fb82d036a42d4eb833a2e1", quantity: 1 }] },
+      { day: 2, date: "2026-06-19", location: "Udaipur", services: [{ serviceId: "69fb826f36a42d4eb833a2d5", quantity: 1 }] },
+    ],
+    addons: [],
+    isConfirmed: false,
+    totalPrice: 30000,
+  },
+  {
+    id: 6,
+    customer: { name: "Karan Desai", email: "karan.desai@gmail.com", phone: "9723456789", note: "Corporate event photography." },
+    events: [{ day: 1, date: "2026-06-26", location: "Mumbai", services: [{ serviceId: "69fb82d036a42d4eb833a2e2", quantity: 1 }] }],
+    addons: [],
+    isConfirmed: true,
+    totalPrice: 15000,
+  },
 ];
+
+const getBookingStatus = (booking) => booking.status || (booking.isConfirmed ? "confirmed" : "pending");
+const getFirstEvent = (booking) => booking.events?.[0] || {};
+const getEventSummary = (booking) => `${booking.events?.length || 0} day${booking.events?.length === 1 ? "" : "s"}`;
 
 const INITIALS_COLORS = [
   "bg-primary/20 text-primary",
@@ -49,17 +96,21 @@ export default function Bookings() {
 
   const allBookings = apiBookings?.length ? apiBookings : FAKE_BOOKINGS;
   const bookings = allBookings.filter((b) => {
-    const matchSearch = !search || b.clientName.toLowerCase().includes(search.toLowerCase()) || b.clientEmail?.toLowerCase().includes(search.toLowerCase());
-    const matchStatus = status === "all" || b.status === status;
+    const customer = b.customer || {};
+    const matchSearch = !search || customer.name?.toLowerCase().includes(search.toLowerCase()) || customer.email?.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = status === "all" || getBookingStatus(b) === status;
     return matchSearch && matchStatus;
   });
 
   const statusCounts = { all: allBookings.length };
-  allBookings.forEach(b => { statusCounts[b.status] = (statusCounts[b.status] || 0) + 1; });
+  allBookings.forEach(b => {
+    const bookingStatus = getBookingStatus(b);
+    statusCounts[bookingStatus] = (statusCounts[bookingStatus] || 0) + 1;
+  });
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-xl font-bold text-slate-900 dark:text-foreground">Confirm Requests</h1>
           <p className="text-sm text-slate-500 dark:text-muted-foreground mt-0.5">{allBookings.length} total requests</p>
@@ -67,34 +118,65 @@ export default function Bookings() {
       </div>
 
       {/* Filter bar */}
-      <div className="flex gap-3 flex-wrap items-center">
-        <div className="relative">
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-[minmax(0,1fr)_auto] items-center">
+        <div className="relative w-full max-w-full md:max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 dark:text-muted-foreground/70" />
           <Input
             placeholder="Search client, email…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 h-9 w-64 bg-card text-sm border-border rounded-xl shadow-sm dark:bg-card"
+            className="pl-9 h-9 w-full bg-card text-sm border-border rounded-xl shadow-sm dark:bg-card"
           />
         </div>
-        <Select value={status} onValueChange={setStatus}>
-          <SelectTrigger className="h-9 w-44 bg-card border-border rounded-xl shadow-sm text-sm dark:bg-card">
+        <Select value={status} onValueChange={setStatus} className="w-full md:w-44">
+          <SelectTrigger className="h-9 w-full bg-card border-border rounded-xl shadow-sm text-sm dark:bg-card">
             <SlidersHorizontal className="h-3.5 w-3.5 mr-1.5 text-slate-400 dark:text-muted-foreground" />
             <SelectValue placeholder="All Statuses" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="new">New</SelectItem>
             <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="assigned">Assigned</SelectItem>
             <SelectItem value="confirmed">Confirmed</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
-      {/* Table */}
-      <div className="bg-card rounded-2xl border border-border/60 shadow-sm overflow-hidden">
-        <table className="w-full text-sm">
+      {/* Mobile booking list */}
+      <div className="space-y-3 md:hidden">
+        {bookings.map((b, idx) => {
+          const customer = b.customer || {};
+          const firstEvent = getFirstEvent(b);
+          const sc = STATUS_CONFIG[getBookingStatus(b)] || STATUS_CONFIG.pending;
+          const initials = getInitials(customer.name);
+          const ic = INITIALS_COLORS[idx % INITIALS_COLORS.length];
+          return (
+            <Link
+              key={b.id}
+              href={`/bookings/${b.id}`}
+              className="block rounded-2xl border border-border/60 bg-card p-4 shadow-sm hover:shadow-md transition"
+            >
+              <div className="flex items-center gap-3">
+                <div className={`h-11 w-11 rounded-full flex items-center justify-center text-xs font-bold ${ic}`}>
+                  {initials}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-sm font-semibold text-foreground truncate">{customer.name}</p>
+                  <p className="text-xs text-muted-foreground truncate">{customer.email}</p>
+                </div>
+                <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-semibold ${sc.cls}`}>{sc.label}</span>
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-2 text-xs text-slate-500 dark:text-muted-foreground">
+                <div className="rounded-xl bg-slate-50 dark:bg-slate-900/50 p-2">{getEventSummary(b)}</div>
+                <div className="rounded-xl bg-slate-50 dark:bg-slate-900/50 p-2">{firstEvent.location || "-"}</div>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* Desktop table */}
+      <div className="hidden md:block bg-card rounded-2xl border border-border/60 shadow-sm overflow-x-auto">
+        <table className="min-w-[760px] w-full text-sm">
           <thead>
             <tr className="border-b border-border/60 bg-slate-50 dark:bg-slate-900/50/60 dark:bg-slate-900/30">
               <th className="text-left px-6 py-3.5 text-xs font-semibold text-slate-500 dark:text-muted-foreground uppercase tracking-wider">Client</th>
@@ -124,9 +206,12 @@ export default function Bookings() {
                 </td>
               </tr>
             ) : bookings.map((b, idx) => {
-              const sc = STATUS_CONFIG[b.status] || STATUS_CONFIG.new;
+              const customer = b.customer || {};
+              const firstEvent = getFirstEvent(b);
+              const bookingStatus = getBookingStatus(b);
+              const sc = STATUS_CONFIG[bookingStatus] || STATUS_CONFIG.pending;
               const ic = INITIALS_COLORS[idx % INITIALS_COLORS.length];
-              const initials = getInitials(b.clientName);
+              const initials = getInitials(customer.name);
               return (
                 <tr key={b.id} className="hover:bg-slate-50 dark:bg-slate-900/50/70 dark:hover:bg-slate-900/30 transition-colors">
                   <td className="px-6 py-4">
@@ -135,24 +220,24 @@ export default function Bookings() {
                         {initials}
                       </div>
                       <div>
-                        <p className="font-semibold text-slate-900 dark:text-foreground">{b.clientName}</p>
-                        <p className="text-xs text-slate-400 dark:text-muted-foreground">{b.clientEmail}</p>
+                        <p className="font-semibold text-slate-900 dark:text-foreground">{customer.name}</p>
+                        <p className="text-xs text-slate-400 dark:text-muted-foreground">{customer.email}</p>
                       </div>
                     </div>
                   </td>
                   <td className="px-4 py-4">
-                    <span className="capitalize text-slate-700 dark:text-muted-foreground font-medium">{b.eventType}</span>
+                    <span className="capitalize text-slate-700 dark:text-muted-foreground font-medium">{getEventSummary(b)}</span>
                   </td>
                   <td className="px-4 py-4 hidden md:table-cell">
                     <div className="flex items-center gap-1.5 text-slate-600 dark:text-muted-foreground">
                       <Calendar className="h-3.5 w-3.5 text-slate-400 dark:text-muted-foreground/70 shrink-0" />
-                      {format(new Date(b.eventDate), "MMM d, yyyy")}
+                      {firstEvent.date ? format(new Date(firstEvent.date), "MMM d, yyyy") : "-"}
                     </div>
                   </td>
                   <td className="px-4 py-4 hidden lg:table-cell">
                     <div className="flex items-center gap-1.5 text-slate-600 dark:text-muted-foreground text-xs">
                       <MapPin className="h-3.5 w-3.5 text-slate-400 dark:text-muted-foreground/70 shrink-0" />
-                      <span className="truncate max-w-[160px]">{b.location}</span>
+                      <span className="truncate max-w-[160px]">{firstEvent.location || "-"}</span>
                     </div>
                   </td>
                   <td className="px-4 py-4 text-center">
@@ -162,7 +247,7 @@ export default function Bookings() {
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center justify-end gap-3">
-                      <span className="font-semibold text-slate-900 dark:text-foreground">{formatCurrency(b.totalPrice, settings.currency)}</span>
+                      <span className="font-semibold text-slate-900 dark:text-foreground">{formatCurrency(b.totalPrice || 0, settings.currency)}</span>
                       <Button asChild variant="ghost" size="icon" className="h-7 w-7 rounded-lg hover:bg-primary/10 hover:text-primary">
                         <Link href={`/bookings/${b.id}`}><ArrowRight className="h-3.5 w-3.5" /></Link>
                       </Button>

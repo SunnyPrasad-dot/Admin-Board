@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useGetPackages, useGetAddons, useUpdatePackage, useUpdateAddon } from "@/lib/api";
+import { useGetPackages, useUpdatePackage } from "@/lib/api";
 import { useSettings } from "@/contexts/SettingsContext";
 import { formatCurrency } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useToast } from "@/hooks/use-toast";
-import { Pencil, Check, X } from "lucide-react";
+import { Pencil, Check, X, Search } from "lucide-react";
 
 function EditableRow({ item, onSave, columns }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -19,7 +19,7 @@ function EditableRow({ item, onSave, columns }) {
   const handleSave = () => {
     onSave(item.id, values);
     setIsEditing(false);
-    toast({ title: "Updated successfully", description: "The changes have been saved." });
+    toast({ title: "Updated successfully", description: "The service changes have been saved." });
   };
 
   const handleCancel = () => {
@@ -32,8 +32,8 @@ function EditableRow({ item, onSave, columns }) {
       {columns.map((col) => (
         <TableCell key={col.key}>
           {isEditing && col.editable ? (
-            <Input 
-              value={values[col.key]} 
+            <Input
+              value={values[col.key]}
               onChange={(e) => {
                 const val = col.type === "number" ? parseFloat(e.target.value) : e.target.value;
                 setValues({ ...values, [col.key]: val });
@@ -60,108 +60,122 @@ function EditableRow({ item, onSave, columns }) {
   );
 }
 
-const FAKE_PACKAGES = [
-  { id: 1, name: "Full Day Premium", category: "Wedding", price: 3500, duration: "10 hours" },
-  { id: 2, name: "Half Day Events", category: "Events", price: 1800, duration: "6 hours" },
-  { id: 3, name: "Mini Portrait Session", category: "Portrait", price: 350, duration: "1 hour" },
-];
-
-const FAKE_ADDONS = [
-  { id: 1, name: "Drone Photography", price: 500, description: "Aerial shots of venue" },
-  { id: 2, name: "Second Shooter", price: 800, description: "Additional photographer for full day" },
-  { id: 3, name: "Same-Day Preview", price: 250, description: "10 edited photos within 24h" },
+const FAKE_SERVICES = [
+  { id: "69fb826f36a42d4eb833a2d5", name: "candid photography", type: "service", priceType: "per_day", price: 6000 },
+  { id: "69fb82d036a42d4eb833a2de", name: "drone", type: "addon", priceType: "per_day", price: 6000 },
+  { id: "69fb82d036a42d4eb833a2df", name: "album", type: "addon", priceType: "fixed", price: 4000 },
+  { id: "69fb82d036a42d4eb833a2e0", name: "traditional photography", type: "service", priceType: "per_day", price: 8000 },
+  { id: "69fb82d036a42d4eb833a2e1", name: "traditional videography", type: "service", priceType: "per_day", price: 10000 },
+  { id: "69fb82d036a42d4eb833a2e2", name: "cinematic film", type: "addon", priceType: "fixed", price: 15000 },
+  { id: "69fb82d036a42d4eb833a2e3", name: "pre wedding shoot", type: "service", priceType: "fixed", price: 18000 },
+  { id: "69fb82d036a42d4eb833a2e4", name: "same day teaser", type: "addon", priceType: "fixed", price: 7000 },
 ];
 
 export default function Prices() {
-  const { data: apiPackages, isLoading: isLoadingPackages } = useGetPackages();
-  const { data: apiAddons, isLoading: isLoadingAddons } = useGetAddons();
-  const updatePackage = useUpdatePackage();
-  const updateAddon = useUpdateAddon();
+  const { data: apiServices, isLoading } = useGetPackages();
+  const updateService = useUpdatePackage();
   const { toast } = useToast();
+  const { settings } = useSettings();
+  const [localServices, setLocalServices] = useState(FAKE_SERVICES);
+  const [search, setSearch] = useState("");
 
-  const [localPackages, setLocalPackages] = useState(FAKE_PACKAGES);
-  
-  const packages = apiPackages?.length ? apiPackages : localPackages;
-  const addons = apiAddons?.length ? apiAddons : FAKE_ADDONS;
+  const allServices = apiServices?.length ? apiServices : localServices;
+  const services = allServices.filter((service) => {
+    const query = search.toLowerCase();
+    return (
+      !query ||
+      service.name?.toLowerCase().includes(query) ||
+      service.type?.toLowerCase().includes(query) ||
+      service.priceType?.toLowerCase().includes(query)
+    );
+  });
 
   const handleAddNew = () => {
-    setLocalPackages([...localPackages, { id: Date.now(), name: "New Package", category: "General", price: 0, duration: "1 hour" }]);
-    toast({ title: "Row Added", description: "Edit the new row to save your package details." });
+    setLocalServices([...localServices, { id: Date.now(), name: "new service", type: "addon", priceType: "per_day", price: 0 }]);
+    toast({ title: "Row Added", description: "Edit the new row to save service details." });
   };
-  
-  const handleSavePackage = (id, data) => updatePackage.mutate({ id, data });
-  const handleSaveAddon = (id, data) => updateAddon.mutate({ id, data });
 
-  const packageColumns = [
-    { key: "name", label: "Name", editable: true },
-    { key: "category", label: "Category", editable: true },
-    { key: "price", label: "Price", editable: true, type: "number" },
-    { key: "duration", label: "Duration", editable: true },
-  ];
+  const handleSaveService = (id, data) => updateService.mutate({ id, data });
 
-  const addonColumns = [
+  const serviceColumns = [
     { key: "name", label: "Name", editable: true },
+    { key: "type", label: "Type", editable: true },
+    { key: "priceType", label: "Price Type", editable: true },
     { key: "price", label: "Price", editable: true, type: "number" },
-    { key: "description", label: "Description", editable: true },
   ];
 
   return (
     <div className="space-y-8">
-      <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-foreground">Price Management</h1>
+      <div className="flex justify-between items-center gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Services</h1>
+          <p className="text-sm text-muted-foreground mt-0.5">{allServices.length} total services</p>
+        </div>
         <Button onClick={handleAddNew} className="bg-primary hover:bg-primary/90">Add New</Button>
+      </div>
+
+      <div className="relative max-w-full sm:max-w-sm">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 dark:text-muted-foreground/70" />
+        <Input
+          placeholder="Search services..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="pl-9 h-9 w-full bg-card text-sm border-border rounded-xl shadow-sm dark:bg-card"
+        />
       </div>
 
       <Card>
         <CardHeader>
-          <CardTitle>Packages</CardTitle>
+          <CardTitle>Service Management</CardTitle>
         </CardHeader>
         <CardContent>
-          {isLoadingPackages ? (
+          {isLoading ? (
             <div className="space-y-2"><Skeleton className="h-10 w-full" /><Skeleton className="h-10 w-full" /></div>
           ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    {packageColumns.map(c => <TableHead key={c.key}>{c.label}</TableHead>)}
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {packages?.map(pkg => (
-                    <EditableRow key={pkg.id} item={pkg} columns={packageColumns} onSave={handleSavePackage} />
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Add-ons</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {isLoadingAddons ? (
-            <div className="space-y-2"><Skeleton className="h-10 w-full" /><Skeleton className="h-10 w-full" /></div>
-          ) : (
-            <div className="overflow-x-auto">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    {addonColumns.map(c => <TableHead key={c.key}>{c.label}</TableHead>)}
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {addons?.map(addon => (
-                    <EditableRow key={addon.id} item={addon} columns={addonColumns} onSave={handleSaveAddon} />
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+            <>
+              <div className="space-y-3 md:hidden">
+                {!services.length ? (
+                  <div className="rounded-2xl border border-dashed border-slate-200 dark:border-border p-8 text-center text-sm text-muted-foreground">
+                    No services match your search.
+                  </div>
+                ) : services.map((service) => (
+                  <div key={service.id} className="rounded-2xl border border-border/60 bg-card p-4 shadow-sm">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                      <div>
+                        <p className="font-semibold text-foreground text-sm truncate">{service.name}</p>
+                        <p className="text-xs text-muted-foreground">{service.type} • {service.priceType}</p>
+                      </div>
+                      <span className="text-sm font-semibold text-foreground">{formatCurrency(service.price, settings.currency)}</span>
+                    </div>
+                    <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-500 dark:text-muted-foreground">
+                      <span className="rounded-full bg-slate-50 dark:bg-slate-900/50 px-2 py-1">Type: {service.type}</span>
+                      <span className="rounded-full bg-slate-50 dark:bg-slate-900/50 px-2 py-1">Price type: {service.priceType}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="hidden md:block overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      {serviceColumns.map(c => <TableHead key={c.key}>{c.label}</TableHead>)}
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {!services.length ? (
+                      <TableRow>
+                        <TableCell colSpan={serviceColumns.length + 1} className="py-10 text-center text-sm text-muted-foreground">
+                          No services match your search.
+                        </TableCell>
+                      </TableRow>
+                    ) : services.map(service => (
+                      <EditableRow key={service.id} item={service} columns={serviceColumns} onSave={handleSaveService} />
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>

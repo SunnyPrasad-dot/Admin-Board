@@ -17,9 +17,9 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 const NAV_ITEMS = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
   { href: "/bookings", label: "Confirm Requests", icon: CalendarCheck },
-  { href: "/inquiries", label: "Inquiry Requests", icon: MessageSquare },
+  { href: "/inquiries", label: "Enquiries", icon: MessageSquare },
   { href: "/photographers", label: "Photographers", icon: Users },
-  { href: "/prices", label: "Price Management", icon: DollarSign },
+  { href: "/prices", label: "Services", icon: DollarSign },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 

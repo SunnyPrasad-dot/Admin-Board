@@ -36,25 +36,29 @@ export default function PhotographerNew() {
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Full Name</label>
-              <Input placeholder="John Doe" required />
+              <Input name="name" placeholder="Rahul Patel" required />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Specialization</label>
-                <Input placeholder="e.g. Wedding & Events" required />
+                <label className="text-sm font-medium">Email</label>
+                <Input name="email" type="email" placeholder="rahul@gmail.com" required />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Years of Experience</label>
-                <Input type="number" placeholder="5" min="0" required />
+                <label className="text-sm font-medium">Phone</label>
+                <Input name="phone" placeholder="9876543210" required />
               </div>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">City</label>
-              <Input placeholder="e.g. New York, NY" required />
+              <Input name="city" placeholder="Ahmedabad" required />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-medium">Skills (comma separated)</label>
-              <Input placeholder="Wedding, Portrait, Studio" />
+              <label className="text-sm font-medium">Role</label>
+              <Input name="role" placeholder="candid_photographer" required />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Avatar</label>
+              <Input name="avatar" placeholder="image.png" />
             </div>
           </CardContent>
           <CardFooter className="flex justify-end gap-2 border-t pt-5">
