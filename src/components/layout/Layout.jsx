@@ -16,7 +16,7 @@ export default function Layout({ children }) {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Desktop Sidebar */}
-        <aside className={`hidden md:flex flex-col shrink-0 fixed inset-y-14 z-20 transition-all duration-300 ${settings.collapseSidebar ? 'w-20' : 'w-60'}`}>
+        <aside className={`hidden md:flex flex-col shrink-0 fixed top-14 bottom-0 z-20 transition-all duration-300 ${settings.collapseSidebar ? 'w-20' : 'w-60'}`}>
           <Sidebar />
         </aside>
 

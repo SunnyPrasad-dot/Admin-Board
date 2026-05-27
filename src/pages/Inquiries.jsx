@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { useGetInquiries } from "@/lib/api";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Mail, Phone, MessageSquare, Calendar, ChevronRight, Clock } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Mail, Phone, MessageSquare, Calendar, ChevronRight, Clock, Search, SlidersHorizontal } from "lucide-react";
 import { getInitials } from "@/lib/utils";
 import { Link } from "wouter";
 
@@ -58,13 +61,47 @@ const FAKE_INQUIRIES = [
 
 export default function Inquiries() {
   const { data: apiInquiries, isLoading } = useGetInquiries();
+  const [search, setSearch] = useState("");
+  const [status, setStatus] = useState("all");
+
   const inquiries = apiInquiries?.length ? apiInquiries : FAKE_INQUIRIES;
+
+  const filtered = inquiries.filter((inq) => {
+    const matchSearch = !search || inq.name?.toLowerCase().includes(search.toLowerCase()) || inq.email?.toLowerCase().includes(search.toLowerCase());
+    const matchStatus = status === "all" || (status === "new" && inq.status !== "read");
+    return matchSearch && matchStatus;
+  });
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-xl font-bold text-slate-900 dark:text-foreground">Enquiries</h1>
-        <p className="text-sm text-slate-500 dark:text-muted-foreground mt-0.5">{inquiries.length} enquiries</p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-xl font-bold text-slate-900 dark:text-foreground">Enquiries</h1>
+          <p className="text-sm text-slate-500 dark:text-muted-foreground mt-0.5">{inquiries.length} enquiries</p>
+        </div>
+      </div>
+
+      {/* Filter bar */}
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-[minmax(0,1fr)_auto] items-center">
+        <div className="relative w-full max-w-full md:max-w-sm">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 dark:text-muted-foreground/70" />
+          <Input
+            placeholder="Search name, email…"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-9 h-9 w-full bg-card text-sm border-border rounded-xl shadow-sm dark:bg-card"
+          />
+        </div>
+        <Select value={status} onValueChange={setStatus} className="w-full md:w-44">
+          <SelectTrigger className="h-9 w-full bg-card border-border rounded-xl shadow-sm text-sm dark:bg-card">
+            <SlidersHorizontal className="h-3.5 w-3.5 mr-1.5 text-slate-400 dark:text-muted-foreground" />
+            <SelectValue placeholder="All Status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Enquiries</SelectItem>
+            <SelectItem value="new">New Only</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       {isLoading ? (
@@ -82,14 +119,14 @@ export default function Inquiries() {
             </div>
           ))}
         </div>
-      ) : !inquiries.length ? (
+      ) : !filtered.length ? (
         <div className="bg-white dark:bg-card rounded-2xl border border-dashed border-slate-200 dark:border-border py-16 text-center">
           <MessageSquare className="h-8 w-8 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-500 dark:text-muted-foreground text-sm">No enquiries yet.</p>
+          <p className="text-slate-500 dark:text-muted-foreground text-sm">No enquiries match your filters.</p>
         </div>
       ) : (
         <div className="space-y-4">
-          {inquiries.map((inq) => (
+          {filtered.map((inq) => (
             <div key={inq.id} className="bg-white dark:bg-card rounded-2xl border border-slate-100 dark:border-border/60 shadow-sm overflow-hidden">
               <div className="p-6">
                 <div className="flex items-start gap-4">
